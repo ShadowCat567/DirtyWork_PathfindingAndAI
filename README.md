@@ -1,5 +1,5 @@
 # PathfindingAndAI
-Pathfinding and Behavioral AI for my Game Design Capstone Project, Dirty Work
+Pathfinding and Behavioral AI that I worked on for my Game Design Capstone Project, Dirty Work.
 
 External Packages used in Project:
 
