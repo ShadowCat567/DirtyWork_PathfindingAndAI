@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
     //these will be the most useful for setting up health UI //It is, thank you Leena - Kimari
     int curHealth;
     int maxHealth = 200; //originally 20
-
-    //Additional Health UI stuff
-    public Slider Slide;
-
 
     Color baseColor;
     Color damageColor = Color.magenta;
@@ -32,12 +27,6 @@ public class PlayerHealth : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         baseColor = sr.color;
         curHealth = maxHealth;
-
-        //Kimari Doing prototype healthbar stuff
-        Slide.minValue = 0;
-        Slide.maxValue = maxHealth;
-
-        Slide.value = maxHealth;
     }
 
     // Update is called once per frame
@@ -56,9 +45,6 @@ public class PlayerHealth : MonoBehaviour
         //Debug.Log("damage taken");
         curHealth -= damageTaken;
         StartCoroutine(DamageTakenColor());
-
-        //Kimari Heath UI stuff
-        Slide.value = curHealth;
     }
 
     public bool isAlive()
