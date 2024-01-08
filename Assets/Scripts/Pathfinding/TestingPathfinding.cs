@@ -24,7 +24,7 @@ public class TestingPathfinding : MonoBehaviour
     {
         if (!foundPath)
         {
-            //path = pathfinding.findPath(start, end);
+            path = pathfinding.findPath(start, end);
 
             foreach (PathNode loc in path)
             {

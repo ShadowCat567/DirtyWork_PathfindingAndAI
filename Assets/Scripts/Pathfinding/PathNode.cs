@@ -42,14 +42,12 @@ public class PathNode : MonoBehaviour
     }
 
     private void Update()
-    {
-        /*
+    {  
         if (graph.getGraph()[room].Count != 0 && !isPopulated)
         {
             populateNeighborhood();
-            isPopulated = true;
-        }
-        */
+            isPopulated = true; //makes sure neigborhood population only happens once
+        }   
     }
 
     void populateNeighborhood()
@@ -60,13 +58,12 @@ public class PathNode : MonoBehaviour
 
             Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == pos; };
 
-            //PathNode perprectiveNeighbor = graph.getGraph()[room].Find(pred);
-            /*
+            PathNode perprectiveNeighbor = graph.getGraph()[room].Find(pred);
+            
             if (perprectiveNeighbor != null)
             {
                 neighbors.Add(perprectiveNeighbor);
             }
-            */
         }
     }
 

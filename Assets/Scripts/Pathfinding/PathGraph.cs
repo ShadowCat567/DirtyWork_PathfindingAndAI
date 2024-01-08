@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using Priority_Queue;
+using Priority_Queue;
 
 //Priority queue from here: https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp 
 
 public class PathGraph : MonoBehaviour
-{/*
+{
     [SerializeField] List<PathNode>[] graph = new List<PathNode>[15];
 
     public List<PathNode>[] getGraph() { return graph; }
@@ -73,7 +73,7 @@ public class PathGraph : MonoBehaviour
         {
             Debug.Log("Came from: " + keyVal.Key.getLocation() + " Going to: " + keyVal.Value.getLocation());
         }
-        
+        */
 
         for (int i = 0; i < cameFrom.Count; i++)
         {
@@ -135,7 +135,6 @@ public class PathGraph : MonoBehaviour
         {
             Debug.Log("List " + i + ": " + nodes[i].Count);
         }
-        
+        */
     }
-*/
 }
