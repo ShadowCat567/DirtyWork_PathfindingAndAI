@@ -103,15 +103,8 @@ public class ChargePlayer : Node
                     //charge player
                     //launch leech in direction of player
                     _chargeVelo += acceleration;
-                    if (_lm.getInSoapTile())
-                    {
-                        _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _soapSpeed);
-                    }
-                    else
-                    {
-                        _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _highSpeed);
-                    }
-
+                    _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _highSpeed);
+                    
                     _leech.transform.position += targetPos * _chargeVelo * Time.deltaTime;
                     pfPath.Clear();
                 }
@@ -153,14 +146,7 @@ public class ChargePlayer : Node
                             if (playerInLOS)
                             {
                                 _chargeVelo += acceleration;
-                                if (_lm.getInSoapTile())
-                                {
-                                    _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _soapSpeed);
-                                }
-                                else
-                                {
-                                    _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _highSpeed);
-                                }
+                                _chargeVelo = Mathf.Clamp(_chargeVelo, _lowSpeed, _highSpeed);
 
                                 _leech.transform.position += targetPos * _chargeVelo * Time.deltaTime;
                                 pfPath.Clear();

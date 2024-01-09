@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    //these will be the most useful for setting up health UI //It is, thank you Leena - Kimari
     int curHealth;
-    int maxHealth = 200; //originally 20
+    int maxHealth = 200; 
 
     Color baseColor;
     Color damageColor = Color.magenta;
@@ -15,7 +14,6 @@ public class PlayerHealth : MonoBehaviour
 
     [SerializeField] GameObject playerDied;
 
-    //if you set up the logic for the healthbar in another script, use these to get player health values
     //gets the max player health
     public int getPlayerMaxHealth() { return maxHealth; }
     //gets the current player health
@@ -34,8 +32,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (curHealth <= 0)
         {
-            this.gameObject.GetComponent<PlayerMovement>().enabled = false;
-            playerDied.SetActive(true);
             //Debug.Log("player is dead");
         }
     }

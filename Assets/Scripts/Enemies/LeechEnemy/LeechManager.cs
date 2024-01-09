@@ -8,8 +8,6 @@ using System;
 
 public class LeechManager : MonoBehaviour
 {
-    bool inBounds = true;
-
     int health;
     [SerializeField] int maxHealth = 45;
 
@@ -25,34 +23,15 @@ public class LeechManager : MonoBehaviour
 
     [SerializeField] float idleVelo = 0.7f;
     [SerializeField] float velocity = 1.5f;
-    [SerializeField] float maxAlertDistance = 3.0f;
-
-    //drain while in attack mode
-    [SerializeField] float drainTime = 3.0f;
-    public float timeRemaining;
 
     bool playerSeen = false;
     bool playerInRoom = false;
 
-    public Vector3 offset;
-    //distance leech attaches at
-    float attachDistance = 1.12f;
-    //drain while in attached mode
-    [SerializeField] float attachedDrain = 1.5f;
-
-    //amount of damage the player takes per drain
-    [SerializeField] int drainDamage = 1;
-
-    //leech pathfinding
     [SerializeField] PathGraph pfGraph;
     PathNode pfCurNode; //in the beginning this is set to the leech's starting node
-    [SerializeField] List<PathNode> pfPath = new List<PathNode>();
     [SerializeField] int pfRoom;
-    public PathNode pfEndNode { get; set; }
-    public int index { get; set; }
     [SerializeField] Tilemap pfMap;
-
-    [SerializeField] float longestPathDistance = 3.5f;
+    
     BoxCollider2D lc;
     public Rigidbody2D rb { get; set; }
 
@@ -60,12 +39,6 @@ public class LeechManager : MonoBehaviour
 
     [SerializeField] Tilemap VisualPuddles;
     [SerializeField] GridLayout tileGrid;
-    //[SerializeField] PuddleSystem ps;
-
-    [SerializeField]
-    private bool inSoapTile = false;
-    private bool inSoapDamage = false;
-    public bool getInSoapTile() { return inSoapTile; }
 
     Vector3 forceDir = Vector3.zero;
 
@@ -77,22 +50,14 @@ public class LeechManager : MonoBehaviour
     public float getVelocity() { return velocity; }
     public float getIdleVelocity() { return idleVelo; }
     public void reverseIdleVelo() { idleVelo = -idleVelo; }
-    public float getMaxAlertDist() { return maxAlertDistance; }
-    public float getDrainTime() { return drainTime; }
     public bool getIsPlayerSeen() { return playerSeen; }
     public void setIsPlayerSeen(bool hasSeenPlayer) { playerSeen = hasSeenPlayer; }
     public bool getPlayerInRoom() { return playerInRoom; }
     public void setPlayerInRoom(bool inRoom) { playerInRoom = inRoom; }
-    public float getAttachDist() { return attachDistance; }
-    public float getAttachDrainTime() { return attachedDrain; }
-    public int getDrainDmg() { return drainDamage; }
-    public List<PathNode> getPath() { return pfPath; }
-    public void setPath(List<PathNode> newPath) { pfPath = newPath; }
     public int getRoomNum() { return pfRoom; }
     public PathGraph getGraph() { return pfGraph; }
     public PathNode getCurNode() { return pfCurNode; }
     public void setCurNode(PathNode pn) { pfCurNode = pn; }
-    public float getLongestPathDist() { return longestPathDistance; }
     public BoxCollider2D getLeechColl() { return lc; }
     public Transform getPlayerPos() { return player.transform; }
     public GameObject getPlayer() { return player; }
@@ -105,24 +70,14 @@ public class LeechManager : MonoBehaviour
         health = maxHealth;
         rb = GetComponent<Rigidbody2D>();
         spriteRend = GetComponent<SpriteRenderer>();
-        //sr = GetComponent<SpriteRenderer>();
         baseColor = spriteRend.color;
         lc = this.gameObject.GetComponent<BoxCollider2D>();
         collided = false;
-
-        //Kimari Doing prototype healthbar stuff
-        Slide.minValue = 0;
-        Slide.maxValue = maxHealth;
-
-        //HealthBarUI.SetActive(false);
-        Slide.value = maxHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //CheckTile();
-
         if (health <= 0)
         {
             this.gameObject.SetActive(false);
@@ -131,21 +86,6 @@ public class LeechManager : MonoBehaviour
             {
                 transform.parent = null;
             }
-        }
-
-        if (inSoapTile)
-        {
-            SlowTarget();
-            //isSoapy = true;
-            if (!inSoapDamage)
-            {
-                inSoapDamage = true;
-                StartCoroutine(ISoapDamageCoolDown());
-            }
-        }
-        else
-        {
-            ReturnToNormalSpeed();
         }
     }
 
@@ -167,21 +107,6 @@ public class LeechManager : MonoBehaviour
         health -= damage;
 
         StartCoroutine(ChangeColor(damagedColor));
-
-        //Kimari Heath UI stuff
-        HealthBarUI.SetActive(true);
-        Slide.value = health;
-
-    }
-
-    public void SlowTarget()
-    {
-        velocity = 0.5f;
-    }
-
-    public void ReturnToNormalSpeed()
-    {
-        velocity = 1.5f;
     }
 
     public float facingDirection(Vector2 startingPosition, Vector2 endingPosition)
@@ -213,21 +138,7 @@ public class LeechManager : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
-    {/*
-        Vector3Int tilePos = tileGrid.WorldToCell(collision.gameObject.transform.position);
-        TileAttributes data = ps.GetType(tilePos, "Soap");
-
-        if (!data)
-        {
-            StartCoroutine(InSideWallCountdown());
-        }
-
-        if (data.soap)
-        {
-            //Debug.Log("Leech Manager : Hit with the floor soap!");
-            CheckTile();
-        }
-        */
+    {
         if (collision.gameObject.tag == "Knockback")
         {
             //Debug.Log("I am being knocked back");
@@ -242,12 +153,12 @@ public class LeechManager : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.layer == 3) //leech collided with a wall
         {
             collided = true;
         }
 
-        if (collision.gameObject.layer == 7)
+        if (collision.gameObject.layer == 7) //leech colliced with another leech
         {
             if (collision.gameObject.GetComponent<LeechManager>().moveDirection != moveDirection)
             {
@@ -260,32 +171,11 @@ public class LeechManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        //CheckTile();
-    }
-
     public IEnumerator ChangeColor(Color color)
     {
         spriteRend.color = color;
         yield return new WaitForSeconds(0.4f);
         spriteRend.color = baseColor;
-    }
-
-    IEnumerator SoapSlow()
-    {
-        //Debug.Log("Target is slowed");
-        SlowTarget();
-        yield return new WaitForSeconds(.5f);
-        ReturnToNormalSpeed();
-        inSoapTile = false;
-    }
-
-    IEnumerator ISoapDamageCoolDown()
-    {
-        TakeDamage(1);
-        yield return new WaitForSeconds(0.5f);
-        inSoapDamage = false;
     }
 
     IEnumerator ResetKnockback()
@@ -294,46 +184,4 @@ public class LeechManager : MonoBehaviour
         rb.velocity = Vector2.zero;
         knockedBack = false;
     }
-
-    IEnumerator InSideWallCountdown()
-    {
-        yield return new WaitForSeconds(4.0f);
-        health = -1;
-        gameObject.SetActive(false);
-    }
-
-    /*
-    private bool CheckTile()
-    {
-        Vector3Int tilePos = tileGrid.WorldToCell(this.gameObject.transform.position);
-
-        TileAttributes data = ps.GetType(tilePos, "Soap");
-
-        if (!data)
-        {
-            StartCoroutine(InSideWallCountdown());
-        }
-
-        if (data.soap && inSoapTile == false)
-        {
-            //Debug.Log("Leech Manager :  Entered into soap!");
-            inSoapTile = true;
-            return inSoapTile;
-        }
-        if (data.soap && inSoapTile == true)
-        {
-            //Debug.Log("Leech Manager :  Still in soap!");
-            inSoapTile = true;
-            return inSoapTile;
-        }
-        if (!data.soap && inSoapTile)
-        {
-            //Debug.Log("Leech Manager :  Left the soap!");
-            inSoapTile = false;
-            return inSoapTile;
-        }
-
-        return false;
-    }
-    */
 }

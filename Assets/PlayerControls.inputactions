@@ -1,0 +1,34 @@
+{
+    "name": "PlayerControls",
+    "maps": [
+        {
+            "name": "Movement",
+            "id": "e00cc70c-da8d-429f-a9b0-755d5f17d32e",
+            "actions": [
+                {
+                    "name": "New action1",
+                    "type": "PassThrough",
+                    "id": "7d5cda17-d879-4d2a-b5a9-a7a89ff639e5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b65f83c4-4a4c-4455-b498-44bd39c67aa5",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
