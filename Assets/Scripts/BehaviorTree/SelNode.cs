@@ -9,9 +9,10 @@ namespace BehTree
         public SelNode() : base() { }
         public SelNode(List<Node> children) : base(children) { }
 
-        //return success once we find a node that succeeds, return running once we find a
-        //node that is running. Only return failure if we don't find any nodes that are
-        //succeeding or running
+        //go through each of the nodes, stop on any node that returns success or running
+        //if a node returns success or running, then return success or running
+        //if a node returns failure, keep going until either no nodes remain or a node return success or running
+        //if no nodes return success or running, return failure
         public override NodeState Evaluate()
         {
             foreach (Node child in children)

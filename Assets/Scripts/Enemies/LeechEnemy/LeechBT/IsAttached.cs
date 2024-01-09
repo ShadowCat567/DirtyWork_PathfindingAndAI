@@ -18,6 +18,7 @@ public class IsAttached : Node
 
     public override NodeState Evaluate()
     {
+        //if player is within attached radius, return success, otherwise return failure
         if (Vector2.Distance(_leechTrans.position, _player.transform.position) <= _attachRadius)
         {
             state = NodeState.SUCCESS;

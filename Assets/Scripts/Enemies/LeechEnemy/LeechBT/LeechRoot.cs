@@ -5,53 +5,50 @@ using BehTree;
 
 public class LeechRoot : BTree
 {
-    [SerializeField] float idleVelo = 0.7f;
-    [SerializeField] float velocity = 1.5f;
-    [SerializeField] float maxAlertDistance = 30.0f;
+    [SerializeField] float idleVelo = 0.7f; //leech's idle velocity
+    [SerializeField] float velocity = 1.5f; //leech's active velocity
+    [SerializeField] float maxAlertDistance = 30.0f; //distance within which, leech is alerted to player's presence
 
-    [SerializeField] float maxVelocity = 10.0f;
-    [SerializeField] float minVelocity = 2.0f;
+    [SerializeField] float maxVelocity = 10.0f; //max velocity leech can travel at
+    [SerializeField] float minVelocity = 2.0f; //min velocity leech can travel at
 
-    //speed while in attack mode
-    [SerializeField] float attackVelo = 10.0f;
-    public float timeRemaining;
-
-    public Vector3 offset;
-    //distance leech attaches at
-    float attachDistance = 1.9f;
-    //drain while in attached mode
-    [SerializeField] float attachedDrain = 1.5f;
-    int drainDamage = 1;
+    float attachDistance = 1.9f; //distance leech attaches at
+    [SerializeField] float attachedDrain = 1.5f; //amount of time between ticks of damage while in leech is attached
+    int drainDamage = 1; //amount of damage leech does with each tick
 
     //leech pathfinding
-    [SerializeField] PathGraph pfGraph;
-    PathNode pfCurNode; //in the beginning this is set to the leech's starting node
-    //[SerializeField] List<PathNode> pfPath = new List<PathNode>();
-    [SerializeField] int pfRoom;
-    PathNode pfEndNode { get; set; }
-    int index { get; set; }
+    [SerializeField] PathGraph pfGraph; //referce to pathfinding graph
+    PathNode pfCurNode; //at the start of the game, this is set to the leech's starting node
+    [SerializeField] int pfRoom; //which room leech is in
+    PathNode pfEndNode { get; set; } //node that marks the end of a path the leech generates
+    int index { get; set; } //which node in the path is leech currently on
 
-    BoxCollider2D lc;
-    public Rigidbody2D rb { get; set; }
+    [SerializeField] GameObject player; //reference tp player
+    [SerializeField] GameObject leech; //reference to leech's game object
 
-    [SerializeField] GameObject player;
-    [SerializeField] GameObject leechTrans;
-    [SerializeField] Rigidbody2D leechRb;
+    Transform originalparent; //reference to the leech game object's original parent
 
-    Transform originalparent;
-
-    protected override Node SetUpTree()
+    protected override Node SetUpTree() //sets up the leech's behavior tree
     {
-        originalparent = leechTrans.transform.parent;
+        originalparent = leech.transform.parent;
 
         Node root = new SelNode(new List<Node> { new SelNode(new List<Node> {
-            new SeqNode(new List<Node>{ new IsAttached(player, leechTrans.transform, attachDistance),
-                new DamagePlayer(player, leechTrans, attachedDrain, drainDamage)}),
+            new SeqNode(new List<Node>{ new IsAttached(player, leech.transform, attachDistance),
+                new DamagePlayer(player, leech, attachedDrain, drainDamage)}),
             new SeqNode(new List<Node>{
-                new inRadiusOfPlayer(leechTrans.transform, player, maxAlertDistance),
-            new ChargePlayer(player, leechTrans, minVelocity, maxVelocity, originalparent, pfGraph, pfCurNode, pfEndNode, idleVelo) })}),
-            new WanderToPlayer(pfGraph, pfCurNode, player, leechTrans, idleVelo, pfEndNode, index)});
+                new inRadiusOfPlayer(leech.transform, player, maxAlertDistance),
+            new ChargePlayer(player, leech, minVelocity, maxVelocity, originalparent, pfGraph, pfCurNode, pfEndNode, idleVelo) })}),
+            new WanderToPlayer(pfGraph, pfCurNode, player, leech, idleVelo, pfEndNode, index)});
 
         return root;
     }
+    /* Structure of the Leech's Behavior tree: 
+                                             Root(Selector)
+                                         /                   \
+                                  Selector                   WanderToPlayer
+                           /                   \
+                Seqential                         Seqential
+              /          \                        /       \
+       IsAttached     DamagePlayer     InRadiusOfPlayer    ChargePlayer
+     */
 }

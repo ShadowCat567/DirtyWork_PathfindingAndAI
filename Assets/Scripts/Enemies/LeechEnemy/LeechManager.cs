@@ -17,10 +17,6 @@ public class LeechManager : MonoBehaviour
     Color baseColor = Color.white;
     Color damagedColor = Color.red;
 
-    //UI for Health
-    public Slider Slide;
-    public GameObject HealthBarUI;
-
     [SerializeField] float idleVelo = 0.7f;
     [SerializeField] float velocity = 1.5f;
 
@@ -36,9 +32,6 @@ public class LeechManager : MonoBehaviour
     public Rigidbody2D rb { get; set; }
 
     [System.NonSerialized] public GameObject player;
-
-    [SerializeField] Tilemap VisualPuddles;
-    [SerializeField] GridLayout tileGrid;
 
     Vector3 forceDir = Vector3.zero;
 
@@ -65,7 +58,6 @@ public class LeechManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //I don't like using find, try to see if there is something better that can achieve the same result...
         player = GameObject.Find("Player");
         health = maxHealth;
         rb = GetComponent<Rigidbody2D>();
@@ -116,13 +108,10 @@ public class LeechManager : MonoBehaviour
 
     public void ResetLeech()
     {
-        //isSoapy = false;
         spriteRend = GetComponent<SpriteRenderer>();
         baseColor = Color.white;
         spriteRend.color = baseColor;
         health = maxHealth;
-        Slide.value = maxHealth;
-        //Debug.Log("Current State: " + curState.ToString());
     }
 
     public PathNode getLeechNode()
@@ -131,7 +120,6 @@ public class LeechManager : MonoBehaviour
         Vector3 nodePos = pfMap.CellToWorld(tilePos);
         Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == new Vector2(nodePos.x + 1f, nodePos.y + 1f); };
         PathNode leechPos = pfGraph.getGraph()[pfRoom].Find(pred);
-        //Debug.Log("Node Position = " + tilePos);
 
         //leechPos.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.06f, 0.24f);
         return leechPos;
@@ -141,10 +129,8 @@ public class LeechManager : MonoBehaviour
     {
         if (collision.gameObject.tag == "Knockback")
         {
-            //Debug.Log("I am being knocked back");
             knockedBack = true;
             collided = true;
-            //ChangeColor(knockbackkColor);
 
             Vector3 diff = transform.position - collision.transform.position;
             forceDir = diff;

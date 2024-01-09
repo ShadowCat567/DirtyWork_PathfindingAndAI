@@ -20,6 +20,7 @@ public class inRadiusOfPlayer : Node
 
     public override NodeState Evaluate()
     {
+        //if player is within leech's alert radius, return success, otherwise return failure
         if (Vector2.Distance(_leechTrans.position, _player.transform.position) < _alertRadius)
         {
             return NodeState.SUCCESS;

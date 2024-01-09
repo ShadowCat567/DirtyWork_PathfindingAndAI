@@ -15,12 +15,12 @@ namespace BehTree
 
         private void Update()
         {
-            if (root != null)
+            if (root != null) //evaluate the state of each node in the tree starting from the root
             {
                 root.Evaluate();
             }
         }
 
-        protected abstract Node SetUpTree();
+        protected abstract Node SetUpTree(); //sets up the behavior tree
     }
 }

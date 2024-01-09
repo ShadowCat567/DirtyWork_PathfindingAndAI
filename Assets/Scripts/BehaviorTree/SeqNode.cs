@@ -9,8 +9,9 @@ namespace BehTree
         public SeqNode() : base() { }
         public SeqNode(List<Node> children) : base(children) { }
 
-        //fails if any child fails, is in running state if any child is running
-        //suceeds if all children succeed
+        //goes through all child nodes, returns failure if at least one fails
+        //if no child fails, but a child is running, return running
+        //if no child fails and no child is running, return success
         public override NodeState Evaluate()
         {
             bool anyChildRunning = false;

@@ -6,18 +6,16 @@ using BehTree;
 public class WanderToPlayer : Node
 {
     //use pathfinding to wander towards the player
-    //does not update player position every frame, waits for a bit before updating player's position
+    //does not update player position every frame, goes to last stored location of player before updating
     PathGraph _pfGraph;
     PathNode _pfCurNode;
     PathNode _pfEndNode;
-
-    PathNode _playerNode;
 
     List<PathNode> pfPath = new List<PathNode>();
     int _index;
 
     GameObject _player = null;
-    //PlayerMovement _pm;
+    PlayerMovement _pm;
     GameObject _leechTrans;
     LeechManager _lm;
     float _idleVel;
@@ -37,27 +35,18 @@ public class WanderToPlayer : Node
 
     public override NodeState Evaluate()
     {
-        if (!_player)
+        if (!_player) //if value of player has not been initalized, initalize it
         {
             _player = GameObject.Find("Player");
-            //_pm = _player.GetComponent<PlayerMovement>();
+            _pm = _player.GetComponent<PlayerMovement>();
             _lm = _leechTrans.GetComponent<LeechManager>();
-            //pfPath = new List<PathNode>();
             _pfCurNode = _leechTrans.GetComponent<LeechManager>().getCurNode();
-            //Debug.Log("Path exists: " + pfPath);
         }
         else
         {
-            /*
-            for(int i = 0; i < lm.getPath().Count; i ++)
-            {
-                lm.getPath()[i].GetComponent<SpriteRenderer>().color = new Color(0.1f, 0.1f, 0.1f, 0.2f);
-            }
-            */
-            //reached the end of a path, need to find a new one
+            //reached the end of a path (or made an invalid path), need to find a new one
             if ((pfPath.Count == 0 || pfPath == null) || _index == pfPath.Count || positionChanged)
             {
-                //pfPath.Clear();
                 positionChanged = false;
 
                 if (pfPath == null)
@@ -66,13 +55,9 @@ public class WanderToPlayer : Node
                 }
 
                 _index = 1;
-                //_pfEndNode = _pm.getPlayerNode();//player's position -- translate player's position to graph node position
-                //Debug.Log("Path exists:" + pfPath);
+                _pfEndNode = _pm.getPlayerNode(); //player's position -- translate player's position to graph node position
                 pfPath = _pfGraph.findPath(_pfCurNode, _pfEndNode);
-                //Debug.Log("Path exists 2:" + pfPath);
-                //Debug.Log("Path: " + pfPath.Count);
                 _pfCurNode = pfPath[_index];
-                //Debug.Log("CurNode: " + lm.getCurNode().getLocation() + " Path: " + lm.getPath().Count + " index: " + lm.index);
             }
             else
             {
@@ -83,12 +68,12 @@ public class WanderToPlayer : Node
                 }
                 else
                 {
-                    if (_index < pfPath.Count - 1)
+                    if (_index < pfPath.Count - 1) // if we have not reach the end of the path, go to the next nodes
                     {
                         _index += 1;
                         _pfCurNode = pfPath[_index];
                     }
-                    else if (_index == pfPath.Count - 1)
+                    else if (_index == pfPath.Count - 1) //if we have reached the end of the path, find new player position
                     {
                         _pfCurNode = _pfEndNode;
                         positionChanged = true;
