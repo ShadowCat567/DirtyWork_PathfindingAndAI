@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//draws a path between two nodes
 public class TestingPathfinding : MonoBehaviour
 {
-    PathGraph pathfinding;
+    PathGraph pathfinding; //reference to pathfinding graph class
 
-    [SerializeField] PathNode start;
-    [SerializeField] PathNode end;
+    [SerializeField] PathNode start; //reference to starting node
+    [SerializeField] PathNode end; //reference to ending node
 
-    List<PathNode> path = new List<PathNode>();
+    List<PathNode> path = new List<PathNode>(); //path between starting and ending node
 
     bool foundPath = false;
 
@@ -22,7 +23,7 @@ public class TestingPathfinding : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!foundPath)
+        if (!foundPath) //if we have found a path between the starting and ending nodes, draw it
         {
             path = pathfinding.findPath(start, end);
 

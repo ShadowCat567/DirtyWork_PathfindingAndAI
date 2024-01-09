@@ -36,6 +36,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    //player takes damage based on the amount passed in
     public void TakeDamage(int damageTaken)
     {
         //Debug.Log("damage taken");
@@ -43,17 +44,20 @@ public class PlayerHealth : MonoBehaviour
         StartCoroutine(DamageTakenColor());
     }
 
+    //returns whether the player is alive
     public bool isAlive()
     {
         return curHealth > 0;
     }
 
+    //kills the player after a delay (this is used if the player goes out of bounds)
     public IEnumerator KillPlayer()
     {
         yield return new WaitForSeconds(3.5f);
         curHealth = -1;
     }
 
+    //when the player takes damage, have them temporarily turn a different color
     IEnumerator DamageTakenColor()
     {
         sr.color = damageColor;

@@ -7,9 +7,9 @@ using Priority_Queue;
 
 public class PathGraph : MonoBehaviour
 {
-    [SerializeField] List<PathNode>[] graph = new List<PathNode>[15];
+    [SerializeField] List<PathNode>[] graph = new List<PathNode>[15]; //array of lists that stores the pathfinding graph
 
-    public List<PathNode>[] getGraph() { return graph; }
+    public List<PathNode>[] getGraph() { return graph; } //gets the graph
 
     private void Start()
     {
@@ -17,6 +17,7 @@ public class PathGraph : MonoBehaviour
     }
 
     //finds a path between two points and returns that path
+    //used this to help with gaining a better understanding of A* and how to implement it: https://www.redblobgames.com/pathfinding/a-star/introduction.html
     public List<PathNode> findPath(PathNode start, PathNode end)
     {
         bool pathError = false;
@@ -28,11 +29,11 @@ public class PathGraph : MonoBehaviour
         List<PathNode> path = new List<PathNode>();
         path.Add(start);
 
-        //Debug.Log("Start location: " + start.getLocation() + " End Location: " + end.getLocation());
-
+        //keep track of which node to travel to, key is node we are coming from, value is node we are going to
         Dictionary<PathNode, PathNode> cameFrom = new Dictionary<PathNode, PathNode>();
         cameFrom[start] = start;
 
+        //keep track of which neighboring node costs the least to travel to
         Dictionary<PathNode, float> costSoFar = new Dictionary<PathNode, float>();
         costSoFar.Add(start, 10000);
 
@@ -40,20 +41,24 @@ public class PathGraph : MonoBehaviour
         {
             PathNode curNode = frontier.Dequeue();
 
+            //if we have reached the end node, stop forming the path
             if (curNode.getLocation() == end.getLocation())
             {
                 break;
             }
 
-            //Debug.Log("Number of neighbors: " + curNode.getNeighbors().Count);
-
+            //go through each of the neighbors of the current node to see which will be most optimal to travel through
+            //on the way to the end node
             foreach (PathNode pathnode in curNode.getNeighbors())
             {
-                if (!costSoFar.ContainsKey(pathnode))
+                if (!costSoFar.ContainsKey(pathnode)) //makes sure we don't double back
                 {
+                    //cost is equal to the distance between two nodes plus the cost to traverse the next node
                     float newCost = (pathnode.getLocation() - end.getLocation()).magnitude + pathnode.getCost();
-                    //Debug.Log("Parent Node: " + curNode.ToString() +  ", Node: " + pathnode.ToString() + ", Cost: " + newCost.ToString());
-                    if (newCost < costSoFar[curNode])
+
+                    //if the new cost is lower than the previous lowest cost, replace the node that yielded the previous
+                    //lowest cost with this current node as the next node in the path
+                    if (newCost < costSoFar[curNode]) 
                     {
                         costSoFar[curNode] = newCost;
                         float heuristic = (pathnode.getLocation() - end.getLocation()).magnitude + pathnode.getCost();
@@ -67,41 +72,34 @@ public class PathGraph : MonoBehaviour
 
         PathNode key = start;
 
-        //Debug.Log(cameFrom.Count);
-        /*
-        foreach(KeyValuePair<PathNode, PathNode> keyVal in cameFrom)
-        {
-            Debug.Log("Came from: " + keyVal.Key.getLocation() + " Going to: " + keyVal.Value.getLocation());
-        }
-        */
-
+        //reconstructs the path starting from the starting node
         for (int i = 0; i < cameFrom.Count; i++)
         {
-            if (!cameFrom.ContainsKey(key))
+            if (!cameFrom.ContainsKey(key)) //occasionally the above algorthim makes invalid paths
             {
                 pathError = true;
                 break;
             }
-            else if (cameFrom[key] == end)
+            else if (cameFrom[key] == end) //we have reached the end of the path
             {
                 break;
             }
-            path.Add(cameFrom[key]);
-            key = cameFrom[key];
+            path.Add(cameFrom[key]); //adds node to the path
+            key = cameFrom[key]; //use the most recent node as the key to find the next node in the path
         }
 
         path.Add(end);
 
-        if (pathError)
+        if (pathError) //if we had an invalid path, return null
         {
             return null;
         }
 
-        return path;
+        return path; //if the path was valid, return it
     }
 
     //returns a random reachable point within the same room as a starting position
-    public PathNode randomReachablePoint(Vector2 start, float distance, int room)
+    public PathNode randomReachablePoint(int room)
     {
         int nodeInd;
 
@@ -110,31 +108,27 @@ public class PathGraph : MonoBehaviour
         return graph[room][nodeInd];
     }
 
+    //CURRENTLY IN PROGRESS
     //returns a circular path when given a radius and a center location, favors nodes that are next to walls
-    //not sure if this one will stay...
     public PathNode[] circularPath(Vector2 center, float radius, int room)
     {
         //draw paths until it makes something that is unobstructed
         return null;
     }
 
+    //puts all of the nodes into the graph based on which room they are located in
     private void convertArray(List<PathNode>[] nodes)
     {
-        for (int i = 0; i < nodes.Length; i++)
+        for (int i = 0; i < nodes.Length; i++) //initializes all of the lists to store nodes in each room
         {
             nodes[i] = new List<PathNode>();
         }
 
-        foreach (PathNode pn in FindObjectsOfType<PathNode>())
+        //iterates through every node in the scene and puts them into the graph based on which room they are located in
+        foreach (PathNode pn in FindObjectsOfType<PathNode>()) 
         {
             int room = pn.getRoom();
             nodes[room].Add(pn);
         }
-        /*
-        for (int i = 0; i < nodes.Length; i++)
-        {
-            Debug.Log("List " + i + ": " + nodes[i].Count);
-        }
-        */
     }
 }

@@ -7,32 +7,30 @@ using UnityEngine.Tilemaps;
 public class PathNode : MonoBehaviour
 {
     private Vector2 location { get; set; }
-    [SerializeField] private int cost;
-    //each node knows which room it belongs to
-    [SerializeField] private int room;
+    [SerializeField] private int cost; //cost to travel through a node
+    [SerializeField] private int room; //which room node is located in
 
-    [SerializeField] Tilemap map;
-    [SerializeField] PathGraph graph;
+    [SerializeField] Tilemap map; //tile map that helps orient each of the nodes
+    [SerializeField] PathGraph graph; //pathfinding graph of all nodes
 
-    bool isPopulated = false;
+    bool isPopulated = false; //tells whether the neighbors list is populated
 
-    [SerializeField] List<PathNode> neighbors = new List<PathNode>();
+    [SerializeField] List<PathNode> neighbors = new List<PathNode>(); //list that stores a node's neighboring nodes
 
-    Vector2[] neighborPos =
+    Vector2[] neighborPos = //array that dictates which nodes qualify as neigbors
     {
-        Vector2.up * 2,
-        Vector2.down * 2,
-        Vector2.left * 2,
-        Vector2.right * 2
+        Vector2.up,
+        Vector2.down,
+        Vector2.left,
+        Vector2.right
     };
 
-    public Vector2 getLocation() { return location; }
-    public int getCost() { return cost; }
-    //will need to change the cost if a wall or piece of furniture is destroyed
-    public void changeCost(int newCost) { cost = newCost; }
-    public int getRoom() { return room; }
-    public void changeRoom(int newRoom) { room = newRoom; }
-    public List<PathNode> getNeighbors() { return neighbors; }
+    public Vector2 getLocation() { return location; } //gets the location of the node
+    public int getCost() { return cost; } //gets the cost of the node
+    public void changeCost(int newCost) { cost = newCost; } //allows for the cost of a node to be changed
+    public int getRoom() { return room; } //gets the room the node is located in
+    public void changeRoom(int newRoom) { room = newRoom; } //allows for a node's room to be changed
+    public List<PathNode> getNeighbors() { return neighbors; } //returns the list of neighbors
 
     private void Start()
     {
@@ -42,7 +40,8 @@ public class PathNode : MonoBehaviour
     }
 
     private void Update()
-    {  
+    {
+        //makes sure the graph is finished setting up and the neighbor list is not yet populated
         if (graph.getGraph()[room].Count != 0 && !isPopulated)
         {
             populateNeighborhood();
@@ -50,9 +49,10 @@ public class PathNode : MonoBehaviour
         }   
     }
 
+    //populates a node's neigborhood list
     void populateNeighborhood()
     {
-        foreach (Vector2 nPos in neighborPos)
+        foreach (Vector2 nPos in neighborPos) //iterates through the array of possible positions for a neighbor node
         {
             Vector2 pos = location + nPos;
 
@@ -60,7 +60,7 @@ public class PathNode : MonoBehaviour
 
             PathNode perprectiveNeighbor = graph.getGraph()[room].Find(pred);
             
-            if (perprectiveNeighbor != null)
+            if (perprectiveNeighbor != null) //if there is a neighboring node, add it to the neighbor list
             {
                 neighbors.Add(perprectiveNeighbor);
             }
