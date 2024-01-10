@@ -46,7 +46,7 @@ public class PathGraph : MonoBehaviour
             {
                 break;
             }
-
+            
             //go through each of the neighbors of the current node to see which will be most optimal to travel through
             //on the way to the end node
             foreach (PathNode pathnode in curNode.getNeighbors())
