@@ -28,7 +28,7 @@ public class DamagePlayer : Node
         {
             _leech.transform.parent = _player.transform;
             //sets the leech's offset from the player
-            _offset = (_leech.transform.position - _leech.GetComponent<LeechManager>().getPlayerPos().position) * 0.95f;
+            _offset = (_leech.transform.position - _leech.GetComponent<LeechManager>().getPlayerPos().position) * 0.9f;
             _leech.transform.position = _leech.GetComponent<LeechManager>().getPlayerPos().position + _offset;
         }
         else
