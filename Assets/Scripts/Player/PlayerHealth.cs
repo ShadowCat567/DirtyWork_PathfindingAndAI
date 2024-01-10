@@ -12,8 +12,6 @@ public class PlayerHealth : MonoBehaviour
 
     SpriteRenderer sr;
 
-    [SerializeField] GameObject playerDied;
-
     //gets the max player health
     public int getPlayerMaxHealth() { return maxHealth; }
     //gets the current player health

@@ -30,11 +30,11 @@ public class PlayerMovement : MonoBehaviour
     public PathNode getPlayerNode() //gets the node the player is currently sitting on
     {
         Vector3Int tilePos = pfMap.WorldToCell(transform.position);
-        Vector3 nodePos = pfMap.CellToWorld(tilePos);
-        Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == new Vector2(nodePos.x + 0.5f, nodePos.y + 0.5f); };
+        //Vector3 nodePos = pfMap.CellToWorld(tilePos);
+        Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == new Vector2(tilePos.x + 0.5f, tilePos.y + 0.5f); };
         PathNode playerPos = pfGraph.getGraph()[curRoom].Find(pred);
 
-        //playerPos.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.06f, 0.24f);
+        playerPos.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.06f, 0.24f);
         return playerPos;
     }
 

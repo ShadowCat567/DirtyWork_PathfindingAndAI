@@ -19,7 +19,7 @@ public class LeechManager : MonoBehaviour
 
     //variables for pathfinding
     [SerializeField] PathGraph pfGraph; //reference to pathfinding graph
-    PathNode pfCurNode; //at the start of the game this is set to the leech's starting node
+    [SerializeField] PathNode pfCurNode; //at the start of the game this is set to the leech's starting node
     [SerializeField] int pfRoom; //which room leech is in
     [SerializeField] Tilemap pfMap; //tile map to reference node position
     
@@ -100,11 +100,11 @@ public class LeechManager : MonoBehaviour
     public PathNode getLeechNode() //return the path node the leech is currently on top of
     {
         Vector3Int tilePos = pfMap.WorldToCell(transform.position);
-        Vector3 nodePos = pfMap.CellToWorld(tilePos);
-        Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == new Vector2(nodePos.x + 0.5f, nodePos.y + 0.5f); };
+       // Vector3 nodePos = pfMap.CellToWorld(tilePos);
+        Predicate<PathNode> pred = (PathNode pn) => { return pn.getLocation() == new Vector2(tilePos.x + 0.5f, tilePos.y + 0.5f); };
         PathNode leechPos = pfGraph.getGraph()[pfRoom].Find(pred);
 
-        //leechPos.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.06f, 0.24f);
+        leechPos.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0.06f, 0.24f);
         return leechPos;
     }
 

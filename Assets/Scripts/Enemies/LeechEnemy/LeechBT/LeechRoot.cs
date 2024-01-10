@@ -12,7 +12,7 @@ public class LeechRoot : BTree
     [SerializeField] float maxVelocity = 10.0f; //max velocity leech can travel at
     [SerializeField] float minVelocity = 2.0f; //min velocity leech can travel at
 
-    float attachDistance = 1.9f; //distance leech attaches at
+    float attachDistance = 1.2f; //distance leech attaches at
     [SerializeField] float attachedDrain = 1.5f; //amount of time between ticks of damage while in leech is attached
     int drainDamage = 1; //amount of damage leech does with each tick
 
